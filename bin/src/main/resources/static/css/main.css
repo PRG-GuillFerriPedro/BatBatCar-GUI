@@ -5,17 +5,13 @@ body .row {
     padding: 10px;
     font-size: 16px;
 }
-:root {
-  --invalid: #ff0000;
-  --cabezeraTabla: lightgray;
-  --titulo: antiquewhite;
-}
+
 .center {
     text-align: center;
 }
 
 .header {
-    background-color: var(--cabezeraTabla);
+    background-color: lightgray;
     text-transform: uppercase;
     padding: 5px;
     text-align: center;
@@ -35,7 +31,7 @@ body .row {
 }
 
 .section {
-    background-color: var(--titulo);
+    background-color: antiquewhite;
     text-align: center;
     padding: 1px;
     border-top: 1px solid white;

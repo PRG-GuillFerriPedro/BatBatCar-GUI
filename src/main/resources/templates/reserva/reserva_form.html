@@ -1,1 +1,20 @@
 <!-- Vista con el formulario de creación de una reserva -->
+<!DOCTYPE html>
+<html lang="sn">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestor Reservas</title>
+</head>
+<body>
+
+<form action="/reservas" method="post">
+	<div class="section">
+	    <h3><strong>Añadir Reserva a viaje <a th:text="${viaje.getCodViaje()}"></a></strong></h3>
+	</div>
+	
+    <label>Nombre: <input name="user" type="text" required></label><br>
+   <label>Plazas solizitadas: <input name="cantidad" type="number" 	step="1"></label>
+    <input type="submit" value="añadir" required><br>
+</form>
+</body>
+</html>
