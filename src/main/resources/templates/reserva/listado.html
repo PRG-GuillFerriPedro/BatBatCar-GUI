@@ -10,7 +10,7 @@
     <title>Title</title>
 </head>
 <body>
-
+	<div th:unless="${reservas.isEmpty}">
 <div class="section">
     <h3><strong>Listado de Reservas a viaje <a 	th:text="${viaje.getCodViaje()}"></a> </strong></h3>
 </div>
@@ -31,6 +31,10 @@
     </tr>
 	
 </table>
+</div>
+<div th:if="${reservas.isEmpty}">
+		<p>No existen reservas para este viaje.</p>
+	</div>
 <button onclick="location.href = '/viajes';" id="boton" style="align-self: center;" >Volver al listado de viajes</button>
 </body>
 </html>

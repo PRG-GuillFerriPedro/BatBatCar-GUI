@@ -35,8 +35,9 @@
         <td th:text="${#temporals.format(viaje.getFechaSalida(), 'dd-MM-yyyy ''a las'' HH:mm')}"></td>
         <td th:classappend="${(viaje.estaDisponible()) ? 'abierto':'cerrado'}" th:text="${viaje.getEstado()}"></td>
         <td>
-            <span th:if="${viaje.seHanRealizadoReservas}">Sí</span>
-			<span th:unless="${viaje.seHanRealizadoReservas}">No</span>
+            <span th:if="${viaje.estaDisponible()}"><a th:href="@{/reserva-form(codViaje=${viaje.getCodViaje()})}" style="text-decoration:none;">Reservar /</a></span>
+			<a th:href="@{/viaje(codViaje=${viaje.getCodViaje()})}" style="text-decoration:none;">Ver detalle /</a>
+			<a th:href="@{/reservas(codViaje=${viaje.getCodViaje()})}" style="text-decoration:none;">Ver reservas</a>
         </td>
     </tr>
 </table>

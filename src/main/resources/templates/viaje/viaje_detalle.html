@@ -1,1 +1,33 @@
 <!-- Vista para el detalle de un viaje -->
+<!DOCTYPE html>
+<html lang="sn">
+<head>
+    <meta charset="UTF-8">
+	<link rel="stylesheet" href="/css/main.css">
+    <title>Gestor Viajes</title>
+</head>
+<body>
+	<div class="errores" th:if="${errores}">
+			<p th:each="item: ${errores}">
+				<strong th:text="${item.key}"></strong>:
+				<span th:text="${item.value}"></span>
+			</p>
+		</div>
+<form action="/viajes" method="">
+	<div class="section header app-name">
+	    <h3><strong>Detalle Viaje </strong>con codigo <a th:text="${viaje.getCodViaje()}"></a></h3>
+	</div>
+	
+    <label>Ruta: <input name="ruta" type="text" placeholder="ciudad_inicio - ciudad_destino..." th:value="${viaje.getRuta()}" readonly></label><br>
+   <label>Plazas Ofertadas: <input name="cantidadofertada" type="number" min="1" max="6" step="1" 	th:value="${viaje.getPlazasOfertadas()}" readonly></label><br>
+   <label>Propietario: <input name="propietario" type="text" placeholder="Introduzca nombre y apellidos." th:value="${viaje.getPropietario()}" readonly></label><br>
+   <label>Precio: <input name="precio" type="number" placeholder="" min="1" max="999" step=".1" th:value="${viaje.getPrecio()}" readonly></label> <label>Duracion aproximada(en minutos): <input name="durMin" type="number" min="1" step="1" th:value="${viaje.getDuracion()}" readonly ></label> <br>
+   <label>Dia de salida: <input name="diaSalida" type="date" placeholder="yyyy-MM-dd"   th:value="${#temporals.format(viaje.getFechaSalida(),'yyyy-MM-dd')}" readonly></label>   
+   <label>Hora de salida: <input name="horaSalida" type="time" placeholder="" th:value="${#temporals.format(viaje.getFechaSalida(),'HH:mm')}" readonly></label><br>
+   
+   
+	<input type="submit" value="Volver al listado"> 
+	<br>
+</form>
+</body>
+</html>

@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -34,6 +35,20 @@ public class ViajesController {
 		model.addAttribute("viajes", viajesRepository.findAll());
 		model.addAttribute("titulo", "Listado de viajes");
 		return "viaje/listado";
+	}
+
+	@GetMapping("viaje")
+	public String viewViajeAction(@RequestParam int codViaje, Model model) {
+		Set<Viaje> viajes = viajesRepository.findAll();
+		Viaje viaje = new Viaje(codViaje);
+		for (Viaje viaje2 : viajes) {
+			if (viaje2.equals(viaje)) {
+				viaje = viaje2;
+			}
+		}
+		model.addAttribute("viaje", viaje);
+
+		return "viaje/viaje_detalle";
 	}
 
 	@GetMapping("viaje-form")
@@ -82,8 +97,8 @@ public class ViajesController {
 		}
 		LocalDateTime t = LocalDateTime.parse(diaSalidaString + " " + horaSalidaString,
 				DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
-		Viaje v = new Viaje(viajesRepository.findAll().size() + 1, propietario, ruta, t, duracionAproximadaEnMin,
-				precio, plazasOfertadas);
+		Viaje v = new Viaje(viajesRepository.getNextCodViaje(), propietario, ruta, t, duracionAproximadaEnMin, precio,
+				plazasOfertadas);
 		if (!v.estaDisponible()) {
 			v.cerrarViaje();
 		}
