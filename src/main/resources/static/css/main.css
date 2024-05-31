@@ -1,9 +1,11 @@
 html {
     font-family: Arial, monospace
 }
+
 body .row {
     padding: 10px;
     font-size: 16px;
+    margin: 15px auto;
 }
 :root {
   --invalid: #ff0000;
@@ -38,8 +40,9 @@ body .row {
     background-color: var(--titulo);
     text-align: center;
     padding: 1px;
-    border-top: 1px solid white;
-    border-bottom: 1px solid darkgrey;
+    /*border-top: 1px solid white;
+    border-bottom: 1px solid darkgrey;*/
+    border: 1px solid darkgrey;
 }
 form {
     border: 1px solid lightgray;
