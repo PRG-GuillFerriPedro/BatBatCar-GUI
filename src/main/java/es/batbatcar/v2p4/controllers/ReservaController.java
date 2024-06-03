@@ -1,7 +1,9 @@
 package es.batbatcar.v2p4.controllers;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -47,11 +49,23 @@ public class ReservaController {
 		String usuario = params.get("user");
 		int cantidad = Integer.parseInt(params.get("codViaje"));
 		HashMap<String, String> errores = new HashMap<>();
-		Viaje v = new Viaje(Integer.parseInt(codViaje));
-		if (usuario.isBlank()) {
-			errores.put("usuario", "Deves de introducir un usuario");
-		}
+		Viaje v = findViaje(Integer.parseInt(codViaje));
 
+		if (usuario.isBlank()) {
+			errores.put("usuario", "Debes de introducir un usuario");
+		}
+		if (usuario.contentEquals(v.getPropietario())) {
+			errores.put("usuario", "El usuario debe ser diferente al propietario del viaje");
+		}
+		if (!v.estaDisponible()) {
+			errores.put("viaje", "En este viaje no se pueden hacer reservas");
+		}
+		if (getNumPlazasReservadas(v) + cantidad > v.getPlazasOfertadas()) {
+			errores.put("cantidad", "Has excedido el numero de plazas disponibles");
+		}
+		if (usuarioYaRealizoReservas(v, usuario)) {
+			errores.put("reservas", "Ya has realizado una reserva en este viaje.(Solo lo puedes hacer una vez)");
+		}
 		if (errores.size() > 0) {
 			redirectAttributes.addFlashAttribute("errores", errores);
 			return "redirect:/reserva-form";
@@ -68,5 +82,36 @@ public class ReservaController {
 		}
 		redirectAttributes.addFlashAttribute("infoMessage", "Reserva añadida con éxito");
 		return "redirect:/viajes";
+	}
+
+	private int getNumPlazasReservadas(Viaje v) {
+		List<Reserva> reservas = viajesRepository.findReservasByViaje(v);
+		int numPlazas = 0;
+		for (Reserva reserva : reservas) {
+			numPlazas = +reserva.getPlazasSolicitadas();
+		}
+		return numPlazas;
+	}
+
+	private Viaje findViaje(int codViaje) {
+		Set<Viaje> viajes = viajesRepository.findAll();
+		Viaje viaje = new Viaje(codViaje);
+		for (Viaje viaje2 : viajes) {
+			if (viaje2.equals(viaje)) {
+				viaje = viaje2;
+			}
+		}
+		return viaje;
+	}
+
+	private boolean usuarioYaRealizoReservas(Viaje v, String usuario) {
+		List<Reserva> reservas = viajesRepository.findReservasByViaje(v);
+
+		for (Reserva reserva : reservas) {
+			if (reserva.getUsuario().contentEquals(usuario)) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

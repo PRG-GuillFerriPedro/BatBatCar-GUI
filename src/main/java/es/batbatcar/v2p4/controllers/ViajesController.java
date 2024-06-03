@@ -39,13 +39,8 @@ public class ViajesController {
 
 	@GetMapping("viaje")
 	public String viewViajeAction(@RequestParam int codViaje, Model model) {
-		Set<Viaje> viajes = viajesRepository.findAll();
-		Viaje viaje = new Viaje(codViaje);
-		for (Viaje viaje2 : viajes) {
-			if (viaje2.equals(viaje)) {
-				viaje = viaje2;
-			}
-		}
+		Viaje viaje = findViaje(codViaje);
+
 		model.addAttribute("viaje", viaje);
 
 		return "viaje/viaje_detalle";
@@ -113,5 +108,16 @@ public class ViajesController {
 		}
 		redirectAttributes.addFlashAttribute("infoMessage", "Viaje añadido con éxito");
 		return "redirect:/viajes";
+	}
+
+	private Viaje findViaje(int codViaje) {
+		Set<Viaje> viajes = viajesRepository.findAll();
+		Viaje viaje = new Viaje(codViaje);
+		for (Viaje viaje2 : viajes) {
+			if (viaje2.equals(viaje)) {
+				viaje = viaje2;
+			}
+		}
+		return viaje;
 	}
 }
