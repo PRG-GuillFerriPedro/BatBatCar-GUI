@@ -1,0 +1,29 @@
+<!-- Vista con el formulario de creación de una reserva -->
+<!DOCTYPE html>
+<html lang="sn">
+<head>
+    <meta charset="UTF-8">
+	<link rel="stylesheet" href="/css/main.css">
+    <title>Gestor Reservas</title>
+</head>
+<body>
+	<div class="errores" th:if="${errores}">
+			<p th:each="item: ${errores}">
+				<strong th:text="${item.key}"></strong>:
+				<span th:text="${item.value}"></span>
+			</p>
+		</div>
+<form action="/reservas?codViaje=${viaje.getCodViaje()}" method="">
+	<div class="section header app-name">
+		    <h3><strong>Detalle Reserva </strong>con codigo <a th:text="${reserva.getCodigoReserva()}"></a></h3>
+		</div>
+	
+    <label>Nombre: <input name="user" type="text" placeholder="Instroduzca un nombre" th:value="${reserva.getUsuario()}" readonly></label><br>
+   <label>Plazas solizitadas: <input name="cantidad" type="number" 	step="1" th:value="${reserva.getPlazasSolicitadas()}" readonly></label><br>
+   <input name="codViaje" type="number" th:value="${viaje.getCodViaje()}" hidden readonly></label><br>
+    <input type="submit" value="Volver al listado" required> 
+	<input type="submit" value="Volver al listado"  onclick="window.location='/viajes';"required hidden> 
+	<br>
+</form>
+</body>
+</html>

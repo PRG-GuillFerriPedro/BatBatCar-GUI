@@ -34,6 +34,15 @@ public class ReservaController {
 		return "reserva/listado";
 	}
 
+	@GetMapping("reserva")
+	public String getReservaAction(@RequestParam String codReserva, @RequestParam int codViaje, Model model) {
+		Viaje v = new Viaje(codViaje);
+		model.addAttribute("viaje", v);
+		model.addAttribute("reserva", viajesRepository.findReservaByID(codReserva));
+		model.addAttribute("titulo", "Vista de la Reserva " + codReserva);
+		return "reserva/reserva_detalle";
+	}
+
 	@GetMapping("reserva-form")
 	public String addReservaFormAction(@RequestParam int codViaje, Model model) {
 		Viaje v = new Viaje(codViaje);
@@ -41,6 +50,17 @@ public class ReservaController {
 		model.addAttribute("reservas", viajesRepository.findReservasByViaje(v));
 		model.addAttribute("titulo", "Listado de Reservas del viaje " + codViaje);
 		return "reserva/reserva_form";
+	}
+
+	@PostMapping(value = "/reserva-cancel")
+	public String postAddAction(@RequestParam String codReserva, RedirectAttributes redirectAttributes) {
+		try {
+			viajesRepository.remove(viajesRepository.findReservaByID(codReserva));
+		} catch (ReservaNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return "redirect:/viajes";
 	}
 
 	@PostMapping(value = "/reserva-add")

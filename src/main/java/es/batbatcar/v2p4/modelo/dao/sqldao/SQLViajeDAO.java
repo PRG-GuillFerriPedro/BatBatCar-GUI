@@ -68,7 +68,7 @@ public class SQLViajeDAO implements ViajeDAO {
 		Connection con = mySQLConnection.getConnection();
 		try (PreparedStatement preparedStatement = con.prepareStatement(sql)) {
 			preparedStatement.setString(1, city);
-			ResultSet rs = preparedStatement.executeQuery(sql);
+			ResultSet rs = preparedStatement.executeQuery();
 			while (rs.next()) {
 				viajes.add(new Viaje(rs.getInt(SQL_CODVIAJE), rs.getString(SQL_PROPIETARIO), rs.getString(SQL_RUTA),
 						rs.getTimestamp(SQL_FECHASALIDA).toLocalDateTime(), rs.getInt(SQL_DURACION),
@@ -89,7 +89,7 @@ public class SQLViajeDAO implements ViajeDAO {
 		Connection con = mySQLConnection.getConnection();
 		try (PreparedStatement preparedStatement = con.prepareStatement(sql)) {
 			preparedStatement.setString(1, estadoViaje.name());
-			ResultSet rs = preparedStatement.executeQuery(sql);
+			ResultSet rs = preparedStatement.executeQuery();
 			while (rs.next()) {
 				viajes.add(new Viaje(rs.getInt(SQL_CODVIAJE), rs.getString(SQL_PROPIETARIO), rs.getString(SQL_RUTA),
 						rs.getTimestamp(SQL_FECHASALIDA).toLocalDateTime(), rs.getInt(SQL_DURACION),
@@ -122,7 +122,7 @@ public class SQLViajeDAO implements ViajeDAO {
 		try (PreparedStatement preparedStatement = con.prepareStatement(sql)) {
 			preparedStatement.setInt(1, codViaje);
 
-			ResultSet rs = preparedStatement.executeQuery(sql);
+			ResultSet rs = preparedStatement.executeQuery();
 			if (rs.next()) {
 				return new Viaje(rs.getInt(SQL_CODVIAJE), rs.getString(SQL_PROPIETARIO), rs.getString(SQL_RUTA),
 						rs.getTimestamp(SQL_FECHASALIDA).toLocalDateTime(), rs.getInt(SQL_DURACION),
@@ -167,7 +167,7 @@ public class SQLViajeDAO implements ViajeDAO {
 				preparedStatement.setFloat(6, viaje.getPrecio());
 				preparedStatement.setInt(7, viaje.getPlazasOfertadas());
 				preparedStatement.setString(8, viaje.getEstado().name());
-				preparedStatement.executeUpdate(sql);
+				preparedStatement.executeUpdate();
 
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
@@ -194,7 +194,7 @@ public class SQLViajeDAO implements ViajeDAO {
 				preparedStatement.setInt(6, viaje.getPlazasOfertadas());
 				preparedStatement.setString(7, viaje.getEstado().name());
 				preparedStatement.setInt(8, viaje.getCodViaje());
-				preparedStatement.executeUpdate(sql);
+				preparedStatement.executeUpdate();
 
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
@@ -211,7 +211,7 @@ public class SQLViajeDAO implements ViajeDAO {
 			try (PreparedStatement preparedStatement = con.prepareStatement(sql)) {
 
 				preparedStatement.setInt(1, viaje.getCodViaje());
-				preparedStatement.executeUpdate(sql);
+				preparedStatement.executeUpdate();
 
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block

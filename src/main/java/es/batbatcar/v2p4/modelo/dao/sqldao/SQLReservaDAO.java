@@ -37,7 +37,7 @@ public class SQLReservaDAO implements ReservaDAO {
 	@Override
 	public Set<Reserva> findAll() {
 		Set<Reserva> reservas = new HashSet<>();
-		String sql = String.format("SELECT * FROM %s ", SQL_TABLE);
+		String sql = String.format("SELECT * FROM %s", SQL_TABLE);
 		try {
 			Connection con = mySQLConnection.getConnection();
 			Statement statement = con.createStatement();
@@ -60,7 +60,7 @@ public class SQLReservaDAO implements ReservaDAO {
 		try (PreparedStatement preparedStatement = con.prepareStatement(sql)) {
 			preparedStatement.setString(1, id);
 
-			ResultSet rs = preparedStatement.executeQuery(sql);
+			ResultSet rs = preparedStatement.executeQuery();
 			if (rs.next()) {
 				return new Reserva(rs.getString(SQL_CODRESERVA), rs.getString(SQL_USUARIO), rs.getInt(SQL_PLAZAS),
 						rs.getTimestamp(SQL_FECHAREALIZACION).toLocalDateTime(), new Viaje(rs.getInt(SQL_CODVIAJE)));
@@ -77,13 +77,13 @@ public class SQLReservaDAO implements ReservaDAO {
 
 	@Override
 	public ArrayList<Reserva> findAllByUser(String user) {
-		Set<Reserva> reservas = new HashSet<>();
+		ArrayList<Reserva> reservas = new ArrayList<>();
 		String sql = String.format("SELECT * FROM %s WHERE %s=?", SQL_TABLE, SQL_USUARIO);
 		Connection con = mySQLConnection.getConnection();
 		try (PreparedStatement preparedStatement = con.prepareStatement(sql)) {
 			preparedStatement.setString(1, user);
 
-			ResultSet rs = preparedStatement.executeQuery(sql);
+			ResultSet rs = preparedStatement.executeQuery();
 			while (rs.next()) {
 				reservas.add(new Reserva(rs.getString(SQL_CODRESERVA), rs.getString(SQL_USUARIO), rs.getInt(SQL_PLAZAS),
 						rs.getTimestamp(SQL_FECHAREALIZACION).toLocalDateTime(), new Viaje(rs.getInt(SQL_CODVIAJE))));
@@ -97,13 +97,13 @@ public class SQLReservaDAO implements ReservaDAO {
 
 	@Override
 	public ArrayList<Reserva> findAllByTravel(Viaje viaje) {
-		Set<Reserva> reservas = new HashSet<>();
+		ArrayList<Reserva> reservas = new ArrayList<>();
 		String sql = String.format("SELECT * FROM %s WHERE %s=?", SQL_TABLE, SQL_CODVIAJE);
 		Connection con = mySQLConnection.getConnection();
 		try (PreparedStatement preparedStatement = con.prepareStatement(sql)) {
 			preparedStatement.setInt(1, viaje.getCodViaje());
 
-			ResultSet rs = preparedStatement.executeQuery(sql);
+			ResultSet rs = preparedStatement.executeQuery();
 			while (rs.next()) {
 				reservas.add(new Reserva(rs.getString(SQL_CODRESERVA), rs.getString(SQL_USUARIO), rs.getInt(SQL_PLAZAS),
 						rs.getTimestamp(SQL_FECHAREALIZACION).toLocalDateTime(), new Viaje(rs.getInt(SQL_CODVIAJE))));
@@ -112,7 +112,7 @@ public class SQLReservaDAO implements ReservaDAO {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return (ArrayList<Reserva>) reservas;
+		return reservas;
 	}
 
 	@Override
@@ -135,7 +135,7 @@ public class SQLReservaDAO implements ReservaDAO {
 			preparedStatement.setInt(1, viaje.getCodViaje());
 			preparedStatement.setString(2, searchParams);
 			preparedStatement.setString(3, searchParams);
-			ResultSet rs = preparedStatement.executeQuery(sql);
+			ResultSet rs = preparedStatement.executeQuery();
 			while (rs.next()) {
 				reservas.add(new Reserva(rs.getString(SQL_CODRESERVA), rs.getString(SQL_USUARIO), rs.getInt(SQL_PLAZAS),
 						rs.getTimestamp(SQL_FECHAREALIZACION).toLocalDateTime(), new Viaje(rs.getInt(SQL_CODVIAJE))));
@@ -162,7 +162,7 @@ public class SQLReservaDAO implements ReservaDAO {
 				preparedStatement.setInt(3, reserva.getPlazasSolicitadas());
 				preparedStatement.setTimestamp(4, Timestamp.valueOf(reserva.getFechaRealizacion()));
 				preparedStatement.setInt(5, reserva.getCodigoViaje());
-				preparedStatement.executeUpdate(sql);
+				preparedStatement.executeUpdate();
 
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
@@ -187,7 +187,7 @@ public class SQLReservaDAO implements ReservaDAO {
 				preparedStatement.setTimestamp(3, Timestamp.valueOf(reserva.getFechaRealizacion()));
 				preparedStatement.setInt(4, reserva.getCodigoViaje());
 				preparedStatement.setString(5, reserva.getCodigoReserva());
-				preparedStatement.executeUpdate(sql);
+				preparedStatement.executeUpdate();
 
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
@@ -208,7 +208,7 @@ public class SQLReservaDAO implements ReservaDAO {
 			try (PreparedStatement preparedStatement = con.prepareStatement(sql)) {
 
 				preparedStatement.setString(1, reserva.getCodigoReserva());
-				preparedStatement.executeUpdate(sql);
+				preparedStatement.executeUpdate();
 
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
@@ -231,7 +231,7 @@ public class SQLReservaDAO implements ReservaDAO {
 		try (PreparedStatement preparedStatement = con.prepareStatement(sql)) {
 			preparedStatement.setInt(1, viaje.getCodViaje());
 
-			ResultSet rs = preparedStatement.executeQuery(sql);
+			ResultSet rs = preparedStatement.executeQuery();
 
 			return rs.getInt(0);
 
@@ -258,7 +258,7 @@ public class SQLReservaDAO implements ReservaDAO {
 			preparedStatement.setInt(1, viaje.getCodViaje());
 			preparedStatement.setString(2, usuario);
 
-			ResultSet rs = preparedStatement.executeQuery(sql);
+			ResultSet rs = preparedStatement.executeQuery();
 			if (rs.next()) {
 				return new Reserva(rs.getString(SQL_CODRESERVA), rs.getString(SQL_USUARIO), rs.getInt(SQL_PLAZAS),
 						rs.getTimestamp(SQL_FECHAREALIZACION).toLocalDateTime(), new Viaje(rs.getInt(SQL_CODVIAJE)));

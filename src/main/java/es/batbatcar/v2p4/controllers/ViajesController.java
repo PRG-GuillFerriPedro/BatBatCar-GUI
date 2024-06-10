@@ -42,7 +42,7 @@ public class ViajesController {
 		Viaje viaje = findViaje(codViaje);
 
 		model.addAttribute("viaje", viaje);
-
+		model.addAttribute("reservas", viajesRepository.findReservasByViaje(viaje));
 		return "viaje/viaje_detalle";
 	}
 
