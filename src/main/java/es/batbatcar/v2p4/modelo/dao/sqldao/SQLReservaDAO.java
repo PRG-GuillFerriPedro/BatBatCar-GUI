@@ -37,11 +37,11 @@ public class SQLReservaDAO implements ReservaDAO {
 	@Override
 	public Set<Reserva> findAll() {
 		Set<Reserva> reservas = new HashSet<>();
-
+		String sql = String.format("SELECT * FROM %s ", SQL_TABLE);
 		try {
 			Connection con = mySQLConnection.getConnection();
 			Statement statement = con.createStatement();
-			ResultSet rs = statement.executeQuery("SELECT * FROM reservas");
+			ResultSet rs = statement.executeQuery(sql);
 			while (rs.next()) {
 				reservas.add(new Reserva(rs.getString(SQL_CODRESERVA), rs.getString(SQL_USUARIO), rs.getInt(SQL_PLAZAS),
 						rs.getTimestamp(SQL_FECHAREALIZACION).toLocalDateTime(), new Viaje(rs.getInt(SQL_CODVIAJE))));
@@ -55,7 +55,7 @@ public class SQLReservaDAO implements ReservaDAO {
 
 	@Override
 	public Reserva findById(String id) {
-		String sql = "SELECT * FROM reservas WHERE codigoReserva=?";
+		String sql = String.format("SELECT * FROM %s WHERE %s=?", SQL_TABLE, SQL_CODRESERVA);
 		Connection con = mySQLConnection.getConnection();
 		try (PreparedStatement preparedStatement = con.prepareStatement(sql)) {
 			preparedStatement.setString(1, id);
@@ -78,7 +78,7 @@ public class SQLReservaDAO implements ReservaDAO {
 	@Override
 	public ArrayList<Reserva> findAllByUser(String user) {
 		Set<Reserva> reservas = new HashSet<>();
-		String sql = "SELECT * FROM reservas WHERE usuario=?";
+		String sql = String.format("SELECT * FROM %s WHERE %s=?", SQL_TABLE, SQL_USUARIO);
 		Connection con = mySQLConnection.getConnection();
 		try (PreparedStatement preparedStatement = con.prepareStatement(sql)) {
 			preparedStatement.setString(1, user);
@@ -98,7 +98,7 @@ public class SQLReservaDAO implements ReservaDAO {
 	@Override
 	public ArrayList<Reserva> findAllByTravel(Viaje viaje) {
 		Set<Reserva> reservas = new HashSet<>();
-		String sql = "SELECT * FROM reservas WHERE viaje=?";
+		String sql = String.format("SELECT * FROM %s WHERE %s=?", SQL_TABLE, SQL_CODVIAJE);
 		Connection con = mySQLConnection.getConnection();
 		try (PreparedStatement preparedStatement = con.prepareStatement(sql)) {
 			preparedStatement.setInt(1, viaje.getCodViaje());
@@ -128,7 +128,8 @@ public class SQLReservaDAO implements ReservaDAO {
 	@Override
 	public List<Reserva> findAllBySearchParams(Viaje viaje, String searchParams) {
 		Set<Reserva> reservas = new HashSet<>();
-		String sql = "SELECT * FROM reservas WHERE viaje=? AND codigoReserva LIKE '%%?%%' OR usuario LIKE '%%?%%' ";
+		String sql = String.format("SELECT * FROM %s WHERE %s=? AND %s LIKE '%%?%%' OR %s LIKE '%%?%%' ", SQL_TABLE,
+				SQL_CODVIAJE, SQL_CODRESERVA, SQL_USUARIO);
 		Connection con = mySQLConnection.getConnection();
 		try (PreparedStatement preparedStatement = con.prepareStatement(sql)) {
 			preparedStatement.setInt(1, viaje.getCodViaje());
@@ -152,7 +153,8 @@ public class SQLReservaDAO implements ReservaDAO {
 		if (reservas.contains(reserva)) {
 			throw new ReservaAlreadyExistsException(reserva);
 		} else {
-			String sql = "INSERT INTO reservas(codigoReserva,usuario,plazasSolicitadas,fechaRealizacion,viaje) VALUES (?,?,?,?,?)";
+			String sql = String.format("INSERT INTO %s(%s,%s,%s,%s,%s) VALUES (?,?,?,?,?)", SQL_TABLE, SQL_CODRESERVA,
+					SQL_USUARIO, SQL_PLAZAS, SQL_FECHAREALIZACION, SQL_CODVIAJE);
 			Connection con = mySQLConnection.getConnection();
 			try (PreparedStatement preparedStatement = con.prepareStatement(sql)) {
 				preparedStatement.setString(1, reserva.getCodigoReserva());
@@ -176,7 +178,8 @@ public class SQLReservaDAO implements ReservaDAO {
 		if (!reservas.contains(reserva)) {
 			throw new ReservaNotFoundException(reserva.getCodigoReserva());
 		} else {
-			String sql = "UPDATE reservas SET usuario='?',plazasSolicitadas=?,fechaRealizacion='?',viaje=? WHERE codigoReserva='?'";
+			String sql = String.format("UPDATE %s SET %s='?',%s=?,%s='?',%s=? WHERE %s='?'", SQL_TABLE, SQL_USUARIO,
+					SQL_PLAZAS, SQL_FECHAREALIZACION, SQL_CODVIAJE, SQL_CODRESERVA);
 			Connection con = mySQLConnection.getConnection();
 			try (PreparedStatement preparedStatement = con.prepareStatement(sql)) {
 				preparedStatement.setString(1, reserva.getUsuario());
@@ -200,7 +203,7 @@ public class SQLReservaDAO implements ReservaDAO {
 		if (!reservas.contains(reserva)) {
 			throw new ReservaNotFoundException(reserva.getCodigoReserva());
 		} else {
-			String sql = "DELETE FROM reservas WHERE codigoReserva='?'";
+			String sql = String.format("DELETE FROM %s WHERE %s='?'", SQL_TABLE, SQL_CODRESERVA);
 			Connection con = mySQLConnection.getConnection();
 			try (PreparedStatement preparedStatement = con.prepareStatement(sql)) {
 
@@ -222,7 +225,8 @@ public class SQLReservaDAO implements ReservaDAO {
 		 * (Reserva reserva : reservas) { numPlazas = +reserva.getPlazasSolicitadas(); }
 		 * return numPlazas;
 		 */
-		String sql = "SELECT SUM(reservas.plazasSolicitadas) FROM reservas WHERE viaje=? ";
+		String sql = String.format("SELECT SUM(%s.%s) FROM %s WHERE %s=? ", SQL_TABLE, SQL_PLAZAS, SQL_TABLE,
+				SQL_CODVIAJE);
 		Connection con = mySQLConnection.getConnection();
 		try (PreparedStatement preparedStatement = con.prepareStatement(sql)) {
 			preparedStatement.setInt(1, viaje.getCodViaje());
@@ -248,7 +252,7 @@ public class SQLReservaDAO implements ReservaDAO {
 		 * null;
 		 */
 
-		String sql = "SELECT * FROM reservas WHERE viaje=? AND usuario = '?' ";
+		String sql = String.format("SELECT * FROM %s WHERE %s=? AND %s = '?' ", SQL_TABLE, SQL_CODVIAJE, SQL_USUARIO);
 		Connection con = mySQLConnection.getConnection();
 		try (PreparedStatement preparedStatement = con.prepareStatement(sql)) {
 			preparedStatement.setInt(1, viaje.getCodViaje());
