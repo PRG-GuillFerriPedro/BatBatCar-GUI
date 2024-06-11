@@ -127,7 +127,7 @@ public class SQLReservaDAO implements ReservaDAO {
 
 	@Override
 	public List<Reserva> findAllBySearchParams(Viaje viaje, String searchParams) {
-		Set<Reserva> reservas = new HashSet<>();
+		ArrayList<Reserva> reservas = new ArrayList<>();
 		String sql = String.format("SELECT * FROM %s WHERE %s=? AND %s LIKE '%%?%%' OR %s LIKE '%%?%%' ", SQL_TABLE,
 				SQL_CODVIAJE, SQL_CODRESERVA, SQL_USUARIO);
 		Connection con = mySQLConnection.getConnection();
@@ -144,7 +144,7 @@ public class SQLReservaDAO implements ReservaDAO {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return (ArrayList<Reserva>) reservas;
+		return reservas;
 	}
 
 	@Override
@@ -178,7 +178,7 @@ public class SQLReservaDAO implements ReservaDAO {
 		if (!reservas.contains(reserva)) {
 			throw new ReservaNotFoundException(reserva.getCodigoReserva());
 		} else {
-			String sql = String.format("UPDATE %s SET %s='?',%s=?,%s='?',%s=? WHERE %s='?'", SQL_TABLE, SQL_USUARIO,
+			String sql = String.format("UPDATE %s SET %s=?,%s=?,%s=?,%s=? WHERE %s=?", SQL_TABLE, SQL_USUARIO,
 					SQL_PLAZAS, SQL_FECHAREALIZACION, SQL_CODVIAJE, SQL_CODRESERVA);
 			Connection con = mySQLConnection.getConnection();
 			try (PreparedStatement preparedStatement = con.prepareStatement(sql)) {
@@ -203,7 +203,7 @@ public class SQLReservaDAO implements ReservaDAO {
 		if (!reservas.contains(reserva)) {
 			throw new ReservaNotFoundException(reserva.getCodigoReserva());
 		} else {
-			String sql = String.format("DELETE FROM %s WHERE %s='?'", SQL_TABLE, SQL_CODRESERVA);
+			String sql = String.format("DELETE FROM %s WHERE %s=?", SQL_TABLE, SQL_CODRESERVA);
 			Connection con = mySQLConnection.getConnection();
 			try (PreparedStatement preparedStatement = con.prepareStatement(sql)) {
 

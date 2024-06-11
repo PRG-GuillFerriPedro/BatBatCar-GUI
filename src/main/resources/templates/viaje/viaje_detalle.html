@@ -52,6 +52,8 @@
   
    
 	<input type="submit" value="Volver al listado"> 
+	<a th:href="@{/reserva-form(codViaje=${viaje.getCodViaje()})}"><button type="button">Hacer Reserva </button></a>
+	<a th:href="@{/viaje-cancel(codViaje=${viaje.getCodViaje()})}"><button type="button">Cancelar Viaje</button></a>
 	<br>
 </form>
 </body>

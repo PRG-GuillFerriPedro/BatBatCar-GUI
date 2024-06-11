@@ -3,6 +3,7 @@ package es.batbatcar.v2p4.controllers;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import es.batbatcar.v2p4.exceptions.ViajeAlreadyExistsException;
+import es.batbatcar.v2p4.exceptions.ViajeNotCancelableException;
 import es.batbatcar.v2p4.exceptions.ViajeNotFoundException;
 import es.batbatcar.v2p4.modelo.dto.viaje.Viaje;
 import es.batbatcar.v2p4.modelo.repositories.ViajesRepository;
@@ -31,15 +33,21 @@ public class ViajesController {
 	 *
 	 */
 	@GetMapping("viajes")
-	public String getViajesAction(Model model) {
-		model.addAttribute("viajes", viajesRepository.findAll());
+	public String getViajesAction(Model model, @RequestParam(required = false) String destino) {
+		Set<Viaje> viajes = new HashSet<>();
+		if (destino != null && !destino.isEmpty()) {
+			viajes = viajesRepository.findAllByDestiny(destino);
+		} else {
+			viajes = viajesRepository.findAll();
+		}
+		model.addAttribute("viajes", viajes);
 		model.addAttribute("titulo", "Listado de viajes");
 		return "viaje/listado";
 	}
 
 	@GetMapping("viaje")
 	public String viewViajeAction(@RequestParam int codViaje, Model model) {
-		Viaje viaje = findViaje(codViaje);
+		Viaje viaje = viajesRepository.findViajeByID(codViaje);
 
 		model.addAttribute("viaje", viaje);
 		model.addAttribute("reservas", viajesRepository.findReservasByViaje(viaje));
@@ -51,6 +59,25 @@ public class ViajesController {
 		model.addAttribute("viajes", viajesRepository.findAll());
 		model.addAttribute("titulo", "Listado de viajes");
 		return "viaje/viaje_form";
+	}
+
+	@GetMapping("viaje-cancel")
+	public String viajeCancelAction(@RequestParam int codViaje, RedirectAttributes redirectAttributes) {
+		Viaje v = viajesRepository.findViajeByID(codViaje);
+
+		try {
+			v.cancelar();
+		} catch (ViajeNotCancelableException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			viajesRepository.save(v);
+		} catch (ViajeAlreadyExistsException | ViajeNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return "redirect:/viajes";
 	}
 
 	@PostMapping(value = "/viaje-add")
@@ -110,14 +137,4 @@ public class ViajesController {
 		return "redirect:/viajes";
 	}
 
-	private Viaje findViaje(int codViaje) {
-		Set<Viaje> viajes = viajesRepository.findAll();
-		Viaje viaje = new Viaje(codViaje);
-		for (Viaje viaje2 : viajes) {
-			if (viaje2.equals(viaje)) {
-				viaje = viaje2;
-			}
-		}
-		return viaje;
-	}
 }

@@ -20,14 +20,18 @@
         <th>Usuario</th>
         <th>Plazas solicitadas</th>
         <th>Fecha y hora de salida</th>
-
+		<th>Acciones</th>
     </tr>
     <tr th:each="reserva: ${reservas}">
         <td th:text="${reserva.getCodigoReserva()}"></td>
         <td th:text="${reserva.getUsuario()}"></td>
         <td th:text="${reserva.getPlazasSolicitadas()}"></td>
         <td th:text="${#temporals.format(reserva.getFechaRealizacion(), 'dd-MM-yyyy ''a las'' HH:mm')}"></td>
+		<td>
 		
+					<a th:href="@{/reserva(codReserva=${reserva.getCodigoReserva()},(codViaje=${viaje.getCodViaje()}))}" style="text-decoration:none;">Ver detalle /</a>
+					<a th:href="@{/reserva-cancel(codReserva=${reserva.getCodigoReserva()})}" style="text-decoration:none;">Cancelar Reserva</a>
+				</td>
     </tr>
 	
 </table>

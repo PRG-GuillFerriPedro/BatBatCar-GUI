@@ -3,7 +3,6 @@ package es.batbatcar.v2p4.controllers;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -52,8 +51,8 @@ public class ReservaController {
 		return "reserva/reserva_form";
 	}
 
-	@PostMapping(value = "/reserva-cancel")
-	public String postAddAction(@RequestParam String codReserva, RedirectAttributes redirectAttributes) {
+	@GetMapping("reserva-cancel")
+	public String reservaCancelAction(@RequestParam String codReserva, RedirectAttributes redirectAttributes) {
 		try {
 			viajesRepository.remove(viajesRepository.findReservaByID(codReserva));
 		} catch (ReservaNotFoundException e) {
@@ -69,7 +68,7 @@ public class ReservaController {
 		String usuario = params.get("user");
 		int cantidad = Integer.parseInt(params.get("codViaje"));
 		HashMap<String, String> errores = new HashMap<>();
-		Viaje v = findViaje(Integer.parseInt(codViaje));
+		Viaje v = viajesRepository.findViajeByID(Integer.parseInt(codViaje));
 
 		if (usuario.isBlank()) {
 			errores.put("usuario", "Debes de introducir un usuario");
@@ -111,17 +110,6 @@ public class ReservaController {
 			numPlazas = +reserva.getPlazasSolicitadas();
 		}
 		return numPlazas;
-	}
-
-	private Viaje findViaje(int codViaje) {
-		Set<Viaje> viajes = viajesRepository.findAll();
-		Viaje viaje = new Viaje(codViaje);
-		for (Viaje viaje2 : viajes) {
-			if (viaje2.equals(viaje)) {
-				viaje = viaje2;
-			}
-		}
-		return viaje;
 	}
 
 	private boolean usuarioYaRealizoReservas(Viaje v, String usuario) {

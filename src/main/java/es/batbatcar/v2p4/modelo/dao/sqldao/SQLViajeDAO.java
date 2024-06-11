@@ -63,8 +63,8 @@ public class SQLViajeDAO implements ViajeDAO {
 	public Set<Viaje> findAll(String city) {
 		Set<Viaje> viajes = new HashSet<>();
 		String delimitador = "-";
-		String sql = String.format("SELECT * FROM %s WHERE SUBSTRING_INDEX(%s,'%s',-1)LIKE '%%?%%'", SQL_TABLE,
-				SQL_RUTA, delimitador);
+		String sql = String.format("SELECT * FROM %s WHERE SUBSTRING_INDEX(%s,'%s',-1)LIKE ?;", SQL_TABLE, SQL_RUTA,
+				delimitador);
 		Connection con = mySQLConnection.getConnection();
 		try (PreparedStatement preparedStatement = con.prepareStatement(sql)) {
 			preparedStatement.setString(1, city);
@@ -181,7 +181,7 @@ public class SQLViajeDAO implements ViajeDAO {
 	public void update(Viaje viaje) throws ViajeNotFoundException {
 		Viaje viajeAActualizar = findById(viaje.getCodViaje());
 		if (viajeAActualizar != null) {
-			String sql = String.format("UPDATE %s SET %s='?',%s=?,%s='?',%s=?,%s=?,%s=?,%s=? WHERE %s='?'", SQL_TABLE,
+			String sql = String.format("UPDATE %s SET %s=?,%s=?,%s=?,%s=?,%s=?,%s=?,%s=? WHERE %s=?", SQL_TABLE,
 					SQL_PROPIETARIO, SQL_RUTA, SQL_FECHASALIDA, SQL_DURACION, SQL_PRECIO, SQL_PLAZAS, SQL_ESTADOVIAJE,
 					SQL_CODVIAJE);
 			Connection con = mySQLConnection.getConnection();
@@ -192,7 +192,8 @@ public class SQLViajeDAO implements ViajeDAO {
 				preparedStatement.setInt(4, (int) viaje.getDuracion());
 				preparedStatement.setFloat(5, viaje.getPrecio());
 				preparedStatement.setInt(6, viaje.getPlazasOfertadas());
-				preparedStatement.setString(7, viaje.getEstado().name());
+				preparedStatement.setString(7, viaje.getEstado().toString());
+
 				preparedStatement.setInt(8, viaje.getCodViaje());
 				preparedStatement.executeUpdate();
 

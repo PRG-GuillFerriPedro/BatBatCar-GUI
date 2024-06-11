@@ -19,6 +19,10 @@
 <div class="section">
     <h3><strong>Listado de Viajes</strong></h3>
 </div>
+<form action="/viajes" method="get">
+    <input type="text" placeholder="Introduce destino" name="destino">
+    <input type="submit" value="Buscar" placeholder="Cadena de búsqueda...">
+</form>
 <table class="viajes">
     <tr>
         <th>Cod. Viaje</th>
@@ -37,7 +41,8 @@
         <td>
             <span th:if="${viaje.estaDisponible()}"><a th:href="@{/reserva-form(codViaje=${viaje.getCodViaje()})}" style="text-decoration:none;">Reservar /</a></span>
 			<a th:href="@{/viaje(codViaje=${viaje.getCodViaje()})}" style="text-decoration:none;">Ver detalle /</a>
-			<a th:href="@{/reservas(codViaje=${viaje.getCodViaje()})}" style="text-decoration:none;">Ver reservas</a>
+			<a th:href="@{/reservas(codViaje=${viaje.getCodViaje()})}" style="text-decoration:none;">Ver reservas /</a>
+			<a th:href="@{/viaje-cancel(codViaje=${viaje.getCodViaje()})}">Cancelar Viaje</a>
         </td>
     </tr>
 </table>
