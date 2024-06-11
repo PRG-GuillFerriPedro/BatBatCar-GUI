@@ -29,6 +29,7 @@
         <th>Ruta</th>
         <th>Propietario</th>
         <th>Fecha y hora de salida</th>
+		<th>Plazas Reservadas / Plazas Disponibles</th>
         <th>Estado</th>
         <th>Acciones</th>
     </tr>
@@ -37,12 +38,13 @@
         <td th:text="${viaje.getRuta()}"></td>
         <td th:text="${viaje.getPropietario()}"></td>
         <td th:text="${#temporals.format(viaje.getFechaSalida(), 'dd-MM-yyyy ''a las'' HH:mm')}"></td>
+		<td><a th:text="${viaje.getNumReservas()}"></a> <a> / </a>		<a th:text="${viaje.getPlazasOfertadas()}-${viaje.getNumReservas()}"></a></td>
         <td th:classappend="${(viaje.estaDisponible()) ? 'abierto':'cerrado'}" th:text="${viaje.getEstado()}"></td>
         <td>
             <span th:if="${viaje.estaDisponible()}"><a th:href="@{/reserva-form(codViaje=${viaje.getCodViaje()})}" style="text-decoration:none;">Reservar /</a></span>
 			<a th:href="@{/viaje(codViaje=${viaje.getCodViaje()})}" style="text-decoration:none;">Ver detalle /</a>
-			<a th:href="@{/reservas(codViaje=${viaje.getCodViaje()})}" style="text-decoration:none;">Ver reservas /</a>
-			<a th:href="@{/viaje-cancel(codViaje=${viaje.getCodViaje()})}">Cancelar Viaje</a>
+			<a th:href="@{/reservas(codViaje=${viaje.getCodViaje()})}" style="text-decoration:none;">Ver reservas</a>
+			<span th:if="${viaje.estaDisponible()}"><a th:href="@{/viaje-cancel(codViaje=${viaje.getCodViaje()})}"> / Cancelar Viaje</a></span>
         </td>
     </tr>
 </table>

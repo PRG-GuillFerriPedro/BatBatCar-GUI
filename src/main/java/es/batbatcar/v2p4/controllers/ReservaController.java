@@ -79,7 +79,7 @@ public class ReservaController {
 		if (!v.estaDisponible()) {
 			errores.put("viaje", "En este viaje no se pueden hacer reservas");
 		}
-		if (getNumPlazasReservadas(v) + cantidad > v.getPlazasOfertadas()) {
+		if (viajesRepository.getPlazasReservadasViaje(v) + cantidad > v.getPlazasOfertadas()) {
 			errores.put("cantidad", "Has excedido el numero de plazas disponibles");
 		}
 		if (usuarioYaRealizoReservas(v, usuario)) {
@@ -101,15 +101,6 @@ public class ReservaController {
 		}
 		redirectAttributes.addFlashAttribute("infoMessage", "Reserva añadida con éxito");
 		return "redirect:/viajes";
-	}
-
-	private int getNumPlazasReservadas(Viaje v) {
-		List<Reserva> reservas = viajesRepository.findReservasByViaje(v);
-		int numPlazas = 0;
-		for (Reserva reserva : reservas) {
-			numPlazas = +reserva.getPlazasSolicitadas();
-		}
-		return numPlazas;
 	}
 
 	private boolean usuarioYaRealizoReservas(Viaje v, String usuario) {

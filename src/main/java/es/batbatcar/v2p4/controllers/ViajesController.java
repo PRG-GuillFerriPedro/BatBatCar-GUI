@@ -64,18 +64,23 @@ public class ViajesController {
 	@GetMapping("viaje-cancel")
 	public String viajeCancelAction(@RequestParam int codViaje, RedirectAttributes redirectAttributes) {
 		Viaje v = viajesRepository.findViajeByID(codViaje);
+		if (v.estaDisponible()) {
 
-		try {
-			v.cancelar();
-		} catch (ViajeNotCancelableException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		try {
-			viajesRepository.save(v);
-		} catch (ViajeAlreadyExistsException | ViajeNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			try {
+				v.cancelar();
+			} catch (ViajeNotCancelableException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			try {
+				viajesRepository.save(v);
+				redirectAttributes.addFlashAttribute("infoMessage", "El viaje se cancelo correctamente");
+			} catch (ViajeAlreadyExistsException | ViajeNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} else {
+			redirectAttributes.addFlashAttribute("infoMessage", "Este viaje no se puede cancelar");
 		}
 		return "redirect:/viajes";
 	}

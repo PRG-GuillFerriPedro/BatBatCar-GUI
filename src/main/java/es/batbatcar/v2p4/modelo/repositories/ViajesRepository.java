@@ -41,9 +41,9 @@ public class ViajesRepository {
 		// Se completa la información acerca de las reservas de cada viaje a través del
 		// DAO de reservas
 		for (Viaje viaje : viajes) {
-			if (this.reservaDAO.findAllByTravel(viaje).size() > 0) {
-				viaje.setSeHanRealizadoReservas(true);
-			}
+
+			viaje.setNumReservas(this.reservaDAO.findAllByTravel(viaje).size());
+
 		}
 		return viajes;
 	}
@@ -58,13 +58,6 @@ public class ViajesRepository {
 		// Se recuperan todos los viajes del DAO de viajes
 		Set<Viaje> viajes = viajeDAO.findAll(destino);
 
-		// Se completa la información acerca de las reservas de cada viaje a través del
-		// DAO de reservas
-		for (Viaje viaje : viajes) {
-			if (this.reservaDAO.findAllByTravel(viaje).size() > 0) {
-				viaje.setSeHanRealizadoReservas(true);
-			}
-		}
 		return viajes;
 	}
 
@@ -121,6 +114,18 @@ public class ViajesRepository {
 	 */
 	public Viaje findViajeByID(int codViaje) {
 		return viajeDAO.findById(codViaje);
+	}
+
+	/**
+	 * Retorna el numero de las plazas reservadas de ese viaje
+	 */
+	public int getPlazasReservadasViaje(Viaje v) {
+		List<Reserva> reservas = findReservasByViaje(v);
+		int numPlazas = 0;
+		for (Reserva reserva : reservas) {
+			numPlazas = +reserva.getPlazasSolicitadas();
+		}
+		return numPlazas;
 	}
 
 	/**
